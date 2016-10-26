@@ -5,6 +5,10 @@ import entity.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import security.IUser;
 
 public class UserFacade implements IUserFacade {
@@ -13,9 +17,10 @@ public class UserFacade implements IUserFacade {
     IUser interface, then security should work "out of the box" with users and roles stored in your database */
   
   private final  Map<String, IUser> users = new HashMap<>();
+  private static EntityManagerFactory emf; 
 
   public UserFacade() {
-    //Test Users
+    
     User user = new User("user","test");
     user.addRole("User");
     users.put(user.getUserName(),user );
@@ -29,9 +34,26 @@ public class UserFacade implements IUserFacade {
     users.put(both.getUserName(),both );
   }
   
+  public UserFacade(EntityManagerFactory emf){
+      this.emf = emf;
+  }
+  
+  public EntityManager getEntityManager(){
+      return emf.createEntityManager();
+  }
+  
     @Override
   public IUser getUserByUserId(String id){
-    return users.get(id);
+      IUser user = null;
+      EntityManager em = getEntityManager();
+      try{
+          Query q = em.createNamedQuery("User.findById");
+          q.setParameter("id", id);
+          user = (IUser) q.getSingleResult();
+      }finally{
+          em.close();
+      }
+    return user;
   }
   /*
   Return the Roles if users could be authenticated, otherwise null
