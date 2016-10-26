@@ -6,14 +6,17 @@
 package security;
 
 import facades.UserFacade;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
  * @author lam
  */
 public class UserFacadeFactory {
-    private static  IUserFacade instance = new UserFacade();
-    public static IUserFacade getInstance(){
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+    private static UserFacade instance = new UserFacade(emf);
+    public static UserFacade getInstance(){
         return instance;
     }
 }

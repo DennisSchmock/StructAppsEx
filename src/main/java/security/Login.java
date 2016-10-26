@@ -33,13 +33,14 @@ public class Login {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response login(String jsonString) throws JOSEException {
+      System.out.println("Got to login");
     try {
       JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
       String username = json.get("username").getAsString();
       String password = json.get("password").getAsString();
       JsonObject responseJson = new JsonObject();
       List<String> roles;
-
+      
       if ((roles = authenticate(username, password)) != null) {
         String token = createToken(username, roles);
         responseJson.addProperty("username", username);
