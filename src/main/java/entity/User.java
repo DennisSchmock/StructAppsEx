@@ -3,6 +3,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,20 +17,21 @@ import security.IUser;
 @Table(name = "iUser")
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-    @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName")
+    @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.userName = :userName")
 })
 
 public class User implements IUser, Serializable {
 
     private String password;  //Pleeeeease dont store me in plain text
+    
+    @Id
     private String userName;
+    
+    @ElementCollection
     List<String> roles = new ArrayList();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    
+    
     public User() {
     }
 
@@ -71,12 +73,6 @@ public class User implements IUser, Serializable {
         this.userName = userName;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    
 
 }

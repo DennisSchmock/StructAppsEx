@@ -22,7 +22,7 @@ public class testFacade {
     public static void main(String[] args) {
         UserFacade uf = new UserFacade(emf);
         
-        User user = new User("user", "test");
+        User user = new User("user", "123456789");
         user.addRole("User");
 
         User admin = new User("admin", "test");

@@ -21,7 +21,7 @@ public class UserFacade implements IUserFacade {
     IUser interface, then security should work "out of the box" with users and roles stored in your database */
     private final Map<String, IUser> users = new HashMap<>();
     private EntityManagerFactory emf;
-    StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+    StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
 
     public UserFacade() {
         User user = new User("user", "test");
@@ -49,7 +49,8 @@ public class UserFacade implements IUserFacade {
 
     public User createUser(User user) {
         EntityManager em = getEntityManager();
-
+        String EncryptedUserPassWord = spe.encryptPassword(user.getPassword());
+        user.setPassword(EncryptedUserPassWord);
         try {
             em.getTransaction().begin();
             em.persist(user);
@@ -76,7 +77,7 @@ public class UserFacade implements IUserFacade {
             }
         } else{
             try {
-                TypedQuery<User> q = em.createNamedQuery("User.findByUserName", User.class);
+                TypedQuery<User> q = em.createNamedQuery("User.findById", User.class);
                 q.setParameter("userName", id);
                 List<User> users = q.getResultList();
                 return users.get(0);
@@ -93,18 +94,25 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public List<String> authenticateUser(String userName, String password) {
-        System.out.println(userName + password);
+        System.out.println(userName + " " + password);
         EntityManager em = getEntityManager();
         IUser user = null;
         try {
-            Query q = em.createNamedQuery("User.findByUserName");
+            Query q = em.createNamedQuery("User.findById",IUser.class);
             q.setParameter("userName", userName);
             user = (IUser) q.getSingleResult();
-
+            System.out.println(user);
         } finally {
             em.close();
         }
-        return user != null && user.getPassword().equals(password) ? user.getRolesAsStrings() : null;
+        System.out.println("before if: " +user.getPassword());
+        if (user!=null&&spe.checkPassword(password, user.getPassword())){
+            System.out.println(user.getPassword());
+            return user.getRolesAsStrings();
+        } else{
+            return null;
+        }
+     //   return user != null && user.getPassword().equals(password) ? user.getRolesAsStrings() : null;
     }
 
 }

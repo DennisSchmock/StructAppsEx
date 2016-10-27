@@ -14,3 +14,4 @@ angular.module('myApp.view1', ['ngRoute'])
   this.msgFromFactory = InfoFactory.getInfo();
   this.msgFromService = InfoService.getInfo();
 }]);
+

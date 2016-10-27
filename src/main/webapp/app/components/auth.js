@@ -30,6 +30,7 @@ angular.module('myApp.security', [])
             }
             else {
               $scope.openErrorModal("You are not authorized to perform the requested operation");
+
             }
           });
 
