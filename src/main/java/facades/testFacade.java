@@ -22,18 +22,15 @@ public class testFacade {
 
     public static void main(String[] args) {
         UserFacade uf = new UserFacade(emf);
-        Role userRole = new Role("User");
-        Role adminRole = new Role("Admin");
+       
         
-        User user = new User("user", "123456789");
-        User admin = new User("admin", "test");
+        User peter = new User("Peter", "test");
+        User anne = new User("Anne", "test");
         
-        admin.addRole(adminRole);
-        admin.addRole(userRole);
-                user.addRole(userRole);
+      
 
-        uf.createUser(user);
-        uf.createUser(admin);
+        uf.createUser(peter);
+        uf.createUser(anne);
         
 
     }

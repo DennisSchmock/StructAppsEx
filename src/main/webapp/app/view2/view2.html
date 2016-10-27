@@ -1,4 +1,7 @@
 <p>This is the partial for view 2.</p>
 <div>
-  <p>Data from server (Users ONLY) <b style="color: darkblue">{{data}}</b></p>
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="team in teams">name: {{team.name}} Url: {{team.url}}</li>
+        
+    </ul>
 </div>
