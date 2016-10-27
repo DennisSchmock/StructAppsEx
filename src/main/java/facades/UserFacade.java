@@ -24,18 +24,6 @@ public class UserFacade implements IUserFacade {
     StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
 
     public UserFacade() {
-        User user = new User("user", "test");
-        user.addRole("User");
-
-        users.put(user.getUserName(), user);
-        User admin = new User("admin", "test");
-        admin.addRole("Admin");
-        users.put(admin.getUserName(), admin);
-
-        User both = new User("user_admin", "test");
-        both.addRole("User");
-        both.addRole("Admin");
-        users.put(both.getUserName(), both);
 
     }
 
@@ -65,28 +53,19 @@ public class UserFacade implements IUserFacade {
 
     @Override
     public IUser getUserByUserId(String id) {
-        System.out.println("getUserbyId" +id);
         EntityManager em = getEntityManager();
         User user = null;
-        if (StringUtils.isStrictlyNumeric(id)) {
-            int id1 = Integer.parseInt(id);
-            try {
-                user = em.find(User.class, id);
-            } finally {
-                em.close();
-            }
-        } else{
-            try {
-                TypedQuery<User> q = em.createNamedQuery("User.findById", User.class);
-                q.setParameter("userName", id);
-                List<User> users = q.getResultList();
-                return users.get(0);
-            } finally {
-                em.close();
-            }
+
+        try {
+            TypedQuery<User> q = em.createNamedQuery("User.findById", User.class);
+            q.setParameter("userName", id);
+            List<User> users = q.getResultList();
+            System.out.println(users.get(0).getRolesAsStrings());
+            return users.get(0);
+        } finally {
+            em.close();
         }
 
-        return user;
     }
 
     /*
@@ -94,25 +73,23 @@ public class UserFacade implements IUserFacade {
      */
     @Override
     public List<String> authenticateUser(String userName, String password) {
-        System.out.println(userName + " " + password);
         EntityManager em = getEntityManager();
         IUser user = null;
         try {
-            Query q = em.createNamedQuery("User.findById",IUser.class);
+            Query q = em.createNamedQuery("User.findById", IUser.class);
             q.setParameter("userName", userName);
             user = (IUser) q.getSingleResult();
-            System.out.println(user);
+            System.out.println("test: " + user.getRolesAsStrings());
         } finally {
             em.close();
         }
-        System.out.println("before if: " +user.getPassword());
-        if (user!=null&&spe.checkPassword(password, user.getPassword())){
+        if (user != null && spe.checkPassword(password, user.getPassword())) {
             System.out.println(user.getPassword());
             return user.getRolesAsStrings();
-        } else{
+        } else {
             return null;
         }
-     //   return user != null && user.getPassword().equals(password) ? user.getRolesAsStrings() : null;
+        //   return user != null && user.getPassword().equals(password) ? user.getRolesAsStrings() : null;
     }
 
 }

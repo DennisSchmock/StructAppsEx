@@ -5,6 +5,7 @@
  */
 package facades;
 
+import entity.Role;
 import entity.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,12 +22,15 @@ public class testFacade {
 
     public static void main(String[] args) {
         UserFacade uf = new UserFacade(emf);
+        Role userRole = new Role("User");
+        Role adminRole = new Role("Admin");
         
         User user = new User("user", "123456789");
-        user.addRole("User");
-
         User admin = new User("admin", "test");
-        admin.addRole("Admin");
+        
+        admin.addRole(adminRole);
+        admin.addRole(userRole);
+                user.addRole(userRole);
 
         uf.createUser(user);
         uf.createUser(admin);

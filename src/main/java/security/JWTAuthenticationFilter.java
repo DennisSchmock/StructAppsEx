@@ -54,6 +54,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
 
         String username = getUsernameFromToken(token);
         final UserPrincipal user = getPricipalByUserId(username);
+          System.out.println("from auth" + user.getName());
         if (user == null) {
           throw new NotAuthorizedException("User could not be authenticated via the provided token",Response.Status.FORBIDDEN);
         }
@@ -88,6 +89,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
   }
   
   private UserPrincipal getPricipalByUserId(String userId) {
+      System.out.println("From getpricipaluserid: " + userId);
     IUserFacade facade = UserFacadeFactory.getInstance();
     IUser user = facade.getUserByUserId(userId);
       //System.out.println("Got user: " +user.getUserName());

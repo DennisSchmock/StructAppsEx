@@ -89,7 +89,7 @@ angular.module('myApp.security', [])
           };
           init();// and fire it after definition
         })
-        .factory('AuthInterceptor', function ($rootScope, $q) {
+        .factory('AuthInterceptor', function ($rootScope, $q,$location) {
           return {
             responseError: function (response) {
               var name = "";
@@ -98,6 +98,7 @@ angular.module('myApp.security', [])
                   name = "NotAuthenticatedEvent";
                   break;
                 case 403:
+                    $location.path('/error');
                   name = "NotAuthorizedEvent";
                   break;
                 default :

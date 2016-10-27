@@ -3,13 +3,17 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import security.IUser;
 
@@ -23,15 +27,14 @@ import security.IUser;
 public class User implements IUser, Serializable {
 
     private String password;  //Pleeeeease dont store me in plain text
-    
+
     @Id
     private String userName;
     
-    @ElementCollection
-    List<String> roles = new ArrayList();
+    
+    @OneToMany (cascade = CascadeType.PERSIST)
+    List<Role> roles = new ArrayList();
 
-    
-    
     public User() {
     }
 
@@ -40,19 +43,27 @@ public class User implements IUser, Serializable {
         this.password = password;
     }
 
-    public User(String userName, String password, List<String> roles) {
+    public User(String userName, String password, List<Role> roles) {
         this.userName = userName;
         this.password = password;
         this.roles = roles;
     }
 
-    public void addRole(String role) {
+    public void addRole(Role role) {
+        
         roles.add(role);
     }
 
     @Override
     public List<String> getRolesAsStrings() {
-        return roles;
+        List<String> rolesString = new ArrayList<>();
+        for (Role role : roles) {
+            rolesString.add(role.getRole());
+        }
+        for (String string : rolesString) {
+            System.out.println(string);
+        }
+        return rolesString;
     }
 
     @Override
@@ -72,7 +83,5 @@ public class User implements IUser, Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    
 
 }
